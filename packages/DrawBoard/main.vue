@@ -196,10 +196,14 @@ export default {
   methods: {
     listenScroll() {
       const w = this;
-      (document.onkeydown = function(e) {
+      (document.onkeydown = (e) => {
         if (e.keyCode === 17) w.ctrlDown = true
+        if (e.keyCode === 32)  this.currentStatus = status.MOVING;
       }),
-      (document.onkeyup = function(e) {
+      (document.onkeyup = (e) => {
+        console.log(e.keyCode, "e.keyCode")
+        // if (e.keyCode === 8) this.deleteSelectedRec()
+          if (e.keyCode === 27)  this.currentStatus = status.DEFAULT;
         if (e.keyCode === 17) w.ctrlDown = false
       }),
       document.getElementsByClassName('view')[0].addEventListener('mousewheel',(e) => {
@@ -212,6 +216,11 @@ export default {
           }
         }
       },false); 
+    },
+    deleteSelectedRec() {
+      this.graphics.splice(this.activeIndex, 1);
+      this.drawBG();
+      this.drawGraphics()
     },
     addRightMouseEvent() {
       let view = document.getElementsByClassName('view')[0]
@@ -288,7 +297,7 @@ export default {
           }
           this.resultData.push(tmpFigure);
         })
-        console.log(this.resultData,"--------------------------------")
+        
         this.$emit('updateData',this.resultData)
     },
     getImageInfo(x, y, width, height, scale) {
@@ -410,6 +419,7 @@ export default {
     },
     // draing
     drawGraphics() {
+     
       this.graphics.forEach((graphic, index) => {
         // format point range when the point exceeds the image boundary
         graphic.points.forEach((point,index)=>{
@@ -581,6 +591,20 @@ export default {
         }
         this.readyForNewEvent("update")
       }else if (this.currentStatus === status.DRAWING) {
+
+        const index = this.graphics.findIndex(item => {
+          return item.points.every((point,index) => {
+            if (item.points[index + 1]) {
+              return item.points[index].x === item.points[index + 1].x && item.points[index].y === item.points[index + 1].y
+            } else {
+              return true
+            }
+          })
+        })
+
+        if (index >= 0) {
+          this.graphics.splice(index, 1);
+        }
         if (this.activeGraphic) {
           this.drawBG();
           this.drawGraphics();

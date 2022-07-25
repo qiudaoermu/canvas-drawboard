@@ -6,12 +6,6 @@
     <el-tooltip effect="dark" content="缩小" placement="bottom">
       <i class="el-icon-zoom-out" @click="changeEvent('zoomOut')"></i>
     </el-tooltip>
-    <el-tooltip effect="dark" content="向右旋转" placement="bottom">
-      <i class="el-icon-refresh-right" @click="changeEvent('rotateRight')"></i>
-    </el-tooltip>
-    <el-tooltip effect="dark" content="向左旋转" placement="bottom">
-      <i class="el-icon-refresh-left" @click="changeEvent('rotateLeft')"></i>
-    </el-tooltip>
     <el-tooltip effect="dark" content="移动" placement="bottom">
       <i class="el-icon-rank" @click="changeEvent('move')"></i>
     </el-tooltip>
@@ -19,16 +13,7 @@
       <i class="el-icon-full-screen" @click="changeEvent('fullScreen')"></i>
     </el-tooltip>
     <el-tooltip effect="dark" content="清空画布" placement="bottom">
-      <el-popconfirm
-        confirmButtonText="确定"
-        cancelButtonText="取消"
-        icon="el-icon-info"
-        iconColor="red"
-        @onConfirm="changeEvent('clearAll')"
-        title="确定清空画布吗？"
-      >
-        <i class="el-icon-delete" slot="reference"></i>
-      </el-popconfirm>
+        <i class="el-icon-delete"  @click="changeEvent('clearAll')"></i>
     </el-tooltip>
     <el-tooltip effect="dark" content="设置" placement="bottom">
       <i class="el-icon-setting" @click="configDialogVisiable = true"></i>
@@ -96,7 +81,7 @@ export default {
         path_lineWidth: 1,
         path_strokeStyle: "#f00",
         point_lineWidth: 1,
-        point_strokeStyle: "#999",
+        point_strokeStyle: "#fff",
         point_radis:5,
         grid: false,
         guid: false

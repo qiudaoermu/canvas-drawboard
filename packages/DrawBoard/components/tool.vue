@@ -1,8 +1,5 @@
 <template>
   <div class="tool">
-    <el-tooltip effect="dark" content="折线" placement="right">
-      <i class="el-icon-arrow-down" @click="changeTool('polyline')"></i>
-    </el-tooltip>
     <el-tooltip effect="dark" content="矩形" placement="right">
       <i class="el-icon-news" @click="changeTool('rectangle')"></i>
     </el-tooltip>
