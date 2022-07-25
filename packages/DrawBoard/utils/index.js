@@ -148,45 +148,58 @@ export function imageToCanvas(x, y, posX, posY, canvasWidth, canvasHeight, image
  * @param {*} scale 
  * @param {*} degree 
  */
-export function formatPointRange(point,imagePosX,imagePosY,viewWidth,viewHeight,imageXOffset,imageYOffset,imageScale,scale,degree) {
-  let tempPoint = canvasToImage(
-    point.x,
-    point.y,
-    imagePosX,
-    imagePosY,
-    viewWidth,
-    viewHeight,
-    imageXOffset,
-    imageYOffset,
-    imageScale,
-    scale,
-    degree
-  )
-  if (tempPoint.x < 0) {
-    tempPoint.x = 0
-  }else if(tempPoint.x > imageWidth){
-    tempPoint.x = imageWidth
-  }
-  if (tempPoint.y < 0){
-    tempPoint.x = 0
-  }else if(tempPoint.y > imageHeight){
-    tempPoint.y = imageHeight
-  }
-  let newPoint = imageToCanvas(
-    tempPoint.x,
-    tempPoint.y,
-    imagePosX,
-    imagePosY,
-    viewWidth,
-    viewHeight,
-    imageXOffset,
-    imageYOffset,
-    imageScale,
-    scale,
-    degree
-  )
-  return newPoint;
-}
+export function formatPointRange(
+         point,
+         imagePosX,
+         imagePosY,
+         viewWidth,
+         viewHeight,
+         imageWidth,
+         imageHeight,
+         imageXOffset,
+         imageYOffset,
+         imageScale,
+         scale,
+         degree
+       ) {
+         let tempPoint = canvasToImage(
+           point.x,
+           point.y,
+           imagePosX,
+           imagePosY,
+           viewWidth,
+           viewHeight,
+           imageXOffset,
+           imageYOffset,
+           imageScale,
+           scale,
+           degree
+         );
+         if (tempPoint.x < 0) {
+           tempPoint.x = 0;
+         } else if (tempPoint.x > imageWidth) {
+           tempPoint.x = imageWidth;
+         }
+         if (tempPoint.y < 0) {
+           tempPoint.x = 0;
+         } else if (tempPoint.y > imageHeight) {
+           tempPoint.y = imageHeight;
+         }
+         let newPoint = imageToCanvas(
+           tempPoint.x,
+           tempPoint.y,
+           imagePosX,
+           imagePosY,
+           viewWidth,
+           viewHeight,
+           imageXOffset,
+           imageYOffset,
+           imageScale,
+           scale,
+           degree
+         );
+         return newPoint;
+       }
 
 
 /**

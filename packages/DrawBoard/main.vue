@@ -33,11 +33,13 @@
             >
           </div>
         </div>
-        <div class="bottomBar">
-          <slot name="bottomBar"></slot>
-        </div>
+       
       </div>
     </div>
+    <pre v-if="resultData.length > 0">
+       {{resultData}}
+    </pre>
+   
   </div>
 </template>
 
@@ -286,6 +288,7 @@ export default {
           }
           this.resultData.push(tmpFigure);
         })
+        console.log(this.resultData,"--------------------------------")
         this.$emit('updateData',this.resultData)
     },
     getImageInfo(x, y, width, height, scale) {
@@ -412,15 +415,17 @@ export default {
         graphic.points.forEach((point,index)=>{
           graphic.points[index] = formatPointRange(
             point,
-            imagePosX,
-            imagePosY,
-            viewWidth,
-            viewHeight,
-            imageXOffset,
-            imageYOffset,
-            imageScale,
-            scale,
-            degree
+            this.imagePosX,
+            this.imagePosY,
+            this.viewWidth,
+            this.viewHeight,
+            this.imageWidth,
+            this.imageHeight,
+            this.imageXOffset,
+            this.imageYOffset,
+            this.imageScale,
+            this.scale,
+            this.degree
           );
         })
         // computedCenter
@@ -463,7 +468,7 @@ export default {
               this.graphics[i].isInPath(this.canvasCtx, this.mouseStartPoint) >
               -1
             ) {
-              this.canvas.style.cursor = "crosshair";
+              this.canvas.style.cursor = "pointer";
               this.activeGraphic = this.graphics[i];
               this.activeIndex = i;
               this.currentStatus = status.UPDATING;
@@ -477,8 +482,8 @@ export default {
               this.options
             );
             this.graphics.push(this.activeGraphic);
-            this.activeIndex = this.graphics.length-1;
-            this.canvas.style.cursor = "crosshair";
+            this.activeIndex = this.graphics.length - 1;
+            this.canvas.style.cursor = "pointer";
           }
         } else {
           if (["polygon", "polyline"].includes(this.currentTool)) {
@@ -497,18 +502,23 @@ export default {
             }
           }
         }
-      }else if(this.currentStatus === status.UPDATING){
+      } else if(this.currentStatus === status.UPDATING){
+        
         for (let i = 0; i < this.graphics.length; i++) {
           // 选中控制点后拖拽修改图形
           if (
             this.graphics[i].isInPath(this.canvasCtx, this.mouseStartPoint) >
             -1
           ) {
-            this.canvas.style.cursor = "crosshair";
+            this.canvas.style.cursor = "default";
             this.activeGraphic = this.graphics[i];
             this.activeIndex = i;
             this.currentStatus = status.UPDATING;
             break;
+          } else {
+            this.activeGraphic = this.graphics[i];
+            this.activeIndex = i;
+            this.currentStatus = status.DRAWING;
           }
         }
         this.pointIndex = this.activeGraphic.isInPath(this.canvasCtx,this.mouseStartPoint)
@@ -582,7 +592,7 @@ export default {
       }
     },
     readyForNewEvent(evevt="draw") {
-      this.canvas.style.cursor = "crosshair";
+      this.canvas.style.cursor = "default";
       if (evevt === "draw") {
         this.activeIndex = -1;
         this.activeGraphic = null;

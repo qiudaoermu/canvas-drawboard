@@ -33,14 +33,7 @@
     <el-tooltip effect="dark" content="设置" placement="bottom">
       <i class="el-icon-setting" @click="configDialogVisiable = true"></i>
     </el-tooltip>
-    <div class="text-container">
-      <div class="text">对比度: </div>
-      <el-slider v-model="contrast" :format-tooltip="formatTooltip" :debounce="20"></el-slider>
-    </div>
-    <div class="text-container">
-      <div class="text">亮度: </div>
-      <el-slider v-model="brightness" :format-tooltip="formatTooltip" :debounce="20"></el-slider>
-    </div>
+    
     <div class="status">
       当前状态：{{this.currentStatus}}
     </div>
@@ -106,7 +99,7 @@ export default {
         point_strokeStyle: "#999",
         point_radis:5,
         grid: false,
-        guid: true
+        guid: false
       }
     };
   },
