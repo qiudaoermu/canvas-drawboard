@@ -1,6 +1,6 @@
 {
-  "name": "vue2-drawboard",
-  "version": "0.10.0",
+  "name": "vue-drawboard",
+  "version": "0.1.0",
   "license": "MIT",
   "description": "a drawboard based on vue2.x",
   "scripts": {

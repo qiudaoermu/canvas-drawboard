@@ -3,17 +3,19 @@
     <div class="drawboard" ref="drawboard">
       <div class="center">
         <div class="topBar">
-          <topBar
+          <!-- <topBar
             :currentStatus="currentStatus"
-            @topBarEvent="topBarEvent"
-            @configChange="configChange"
-            @contrastChange="contrastChange"
-            @brightnessChange="brightnessChange"
-          ></topBar>
+          ></topBar> -->
         </div>
         <div class="wrapper">
           <div class="tools">
-            <tool @toolSelected="toolSelected"></tool>
+            
+            <tool  
+            @toolSelected="toolSelected" 
+            @topBarEvent="topBarEvent"
+            @configChange="configChange"
+            @contrastChange="contrastChange"
+            @brightnessChange="brightnessChange"></tool>
           </div>
           <div class="view" ref="view" 
             v-loading="loading"
@@ -201,9 +203,8 @@ export default {
         if (e.keyCode === 32)  this.currentStatus = status.MOVING;
       }),
       (document.onkeyup = (e) => {
-        console.log(e.keyCode, "e.keyCode")
-        // if (e.keyCode === 8) this.deleteSelectedRec()
-          if (e.keyCode === 27)  this.currentStatus = status.DEFAULT;
+        if (e.keyCode === 8) this.deleteSelectedRec()
+        if (e.keyCode === 27)  this.currentStatus = status.DEFAULT;
         if (e.keyCode === 17) w.ctrlDown = false
       }),
       document.getElementsByClassName('view')[0].addEventListener('mousewheel',(e) => {
@@ -357,6 +358,12 @@ export default {
           break;
         case "zoomOut":
           this.scale = imageEvent.zoomOut(this.graphics,this.convertParams);
+          this.drawBG();
+          this.drawGraphics();
+          this.updateImage();
+          break;
+        case "zoomInit":
+          this.scale = imageEvent.zoomInit(this.graphics,this.convertParams);
           this.drawBG();
           this.drawGraphics();
           this.updateImage();

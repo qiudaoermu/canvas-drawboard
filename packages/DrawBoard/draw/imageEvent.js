@@ -107,6 +107,13 @@ imageEvent.zoomOut = function (graphics,convertParams) {
   return scale;
 }
 
+imageEvent.zoomInit = function(graphics, convertParams) {
+  formatPointsInImage(graphics, convertParams);
+  let scale = convertParams.scale * 0.9;
+  convertParams.scale = scale;
+  formatPointsInCanvas(graphics, convertParams);
+  return 1;
+};
 imageEvent.rotateRight = function (graphics,convertParams) {
   formatPointsInImage(graphics,convertParams);
   let degree = convertParams.degree + 90;
