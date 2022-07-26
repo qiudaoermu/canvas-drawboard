@@ -1,6 +1,6 @@
 {
-  "name": "vue-drawboard",
-  "version": "0.1.0",
+  "name": "canvas-drawboard",
+  "version": "0.1.1",
   "license": "MIT",
   "description": "a drawboard based on vue2.x",
   "scripts": {
@@ -9,12 +9,12 @@
     "build": "vue-cli-service build",
     "lib": "vue-cli-service build --target lib --name drawboard --dest lib packages/index.js"
   },
-  "author": "xindoucha",
+  "author": "qiudaoermu",
   "keyword": "drawboard canvas vue data-label",
   "main": "lib/drawboard.umd.min.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xindoucha/vue2-drawboard.git"
+    "url": "https://github.com/qiudaoermu/canavas-drawboard.git"
   },
   "dependencies": {
     "core-js": "^3.6.5",
