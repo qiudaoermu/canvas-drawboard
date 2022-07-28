@@ -8,8 +8,7 @@
           ></topBar> -->
         </div>
         <div class="wrapper">
-          <div class="tools">
-            
+          <div class="tools" v-if="sidbarShow">
             <tool  
             @toolSelected="toolSelected" 
             @topBarEvent="topBarEvent"
@@ -38,9 +37,7 @@
        
       </div>
     </div>
-    <pre v-if="resultData.length > 0">
-       {{resultData}}
-    </pre>
+  
    
   </div>
 </template>
@@ -71,6 +68,10 @@ export default {
     url:{
       type:String,
       required: true
+    },
+    sidbarShow: {
+      type: Boolean,
+      default:true
     },
     userOptions:{
       type:Object,

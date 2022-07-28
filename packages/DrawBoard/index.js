@@ -1,19 +1,5 @@
 import Vue from 'vue'
-import { Button, Loading, Icon, Tooltip, Popconfirm, Dialog, Switch,Form, FormItem,InputNumber,ColorPicker,Slider } from 'element-ui';
 
-
-Vue.use(Button)
-Vue.use(Icon)
-Vue.use(Tooltip)
-Vue.use(Popconfirm)
-Vue.use(Dialog)
-Vue.use(Switch)
-Vue.use(Form)
-Vue.use(FormItem)
-Vue.use(InputNumber)
-Vue.use(ColorPicker)
-Vue.use(Slider)
-Vue.use(Loading.directive);
 // 导入组件，组件必须声明 name
 import DrawBoard from './main.vue'
 
