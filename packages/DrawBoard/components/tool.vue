@@ -36,6 +36,7 @@
       :visible.sync="configDialogVisiable"
       width="400px"
       :show-close = "false"
+      append-to-body
     >
       <el-form label-position="left" label-width="100px" size="mini" :model="config">
         <el-form-item label="线框颜色：">
