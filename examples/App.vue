@@ -1,34 +1,38 @@
 <template>
   <div>
-    <drawboard :url="url" @updateData="updateData" :labelDataOrigin=labelDataOrigin></drawboard>
+    <drawboard
+      :url="url"
+      style="width:550px;height:450px"
+      @updateData="updateData"
+      :labelDataOrigin="labelDataOrigin"
+    ></drawboard>
   </div>
 </template>
 
 <script>
 export default {
-  name:'example',
-  data(){
+  name: "example",
+  data() {
     return {
-      url:"https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg",
-      labelDataOrigin:[ 
-        { 
-          "type":"rectangle",
-          "points":
-            [
-              {"x":320,"y":168},
-              {"x":434,"y":168},
-              {"x":434,"y":355},
-              {"x":320,"y":355}
-            ]
-        }
-       ],
-      loadingData:false
-    }
+      url:
+        "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg",
+      labelDataOrigin: [
+        {
+          type: "point",
+          points: [{ x: 320, y: 168 }],
+        },
+        {
+          type: "point",
+          points: [{ x: 390, y: 368 }],
+        },
+      ],
+      loadingData: false,
+    };
   },
-  methods:{
+  methods: {
     updateData(data) {
-      console.log(JSON.stringify(data));
-    }
-  }
-}
+      // console.log(JSON.stringify(data));
+    },
+  },
+};
 </script>

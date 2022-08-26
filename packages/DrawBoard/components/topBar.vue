@@ -1,7 +1,7 @@
 <template>
   <div class="bar">
     <div class="status">
-      <!-- 当前状态：{{this.currentStatus}} -->
+      当前状态：{{this.currentStatus}}
     </div>
   </div>
 </template>

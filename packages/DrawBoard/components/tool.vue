@@ -3,6 +3,9 @@
      <el-tooltip effect="dark" content="矩形" placement="right">
       <i class="el-icon-news" @click="changeTool('rectangle')"></i>
     </el-tooltip>
+       <el-tooltip effect="dark" content="点" placement="right">
+      <i class="el-icon-aim" @click="changeTool('point')"></i>
+    </el-tooltip>
     <el-tooltip effect="dark" content="放大" placement="bottom" class="icon">
       <i class="el-icon-zoom-in" @click="changeEvent('zoomIn')"></i>
     </el-tooltip>
@@ -87,7 +90,7 @@ export default {
       // 绘图参数
       config: {
         path_lineWidth: 1,
-        path_strokeStyle: "#f00",
+        path_strokeStyle: "#E1EE51",
         point_lineWidth: 1,
         point_strokeStyle: "#fff",
         point_radis:5,

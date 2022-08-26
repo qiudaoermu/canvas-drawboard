@@ -1,13 +1,12 @@
 {
   "name": "canvas-drawboard",
-  "version": "0.1.2",
+  "version": "0.1.7",
   "license": "MIT",
   "description": "a drawboard based on vue2.x",
   "scripts": {
     "start": "npm run serve",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lib": "vue-cli-service build --target lib --name drawboard --dest lib packages/index.js"
+    "build": "vue-cli-service build --target lib --name drawboard --dest lib packages/index.js"
   },
   "author": "qiudaoermu",
   "keyword": "drawboard canvas vue data-label",

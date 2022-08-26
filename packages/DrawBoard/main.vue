@@ -2,21 +2,22 @@
   <div class="container">
     <div class="drawboard" ref="drawboard">
       <div class="center">
-        <div class="topBar">
-          <!-- <topBar
-            :currentStatus="currentStatus"
-          ></topBar> -->
-        </div>
+        <!-- <div class="topBar">
+          <topBar :currentStatus="currentStatus"></topBar>
+        </div> -->
         <div class="wrapper">
           <div class="tools" v-if="sidbarShow">
-            <tool  
-            @toolSelected="toolSelected" 
-            @topBarEvent="topBarEvent"
-            @configChange="configChange"
-            @contrastChange="contrastChange"
-            @brightnessChange="brightnessChange"></tool>
+            <tool
+              @toolSelected="toolSelected"
+              @topBarEvent="topBarEvent"
+              @configChange="configChange"
+              @contrastChange="contrastChange"
+              @brightnessChange="brightnessChange"
+            ></tool>
           </div>
-          <div class="view" ref="view" 
+          <div
+            class="view"
+            ref="view"
             v-loading="loading"
             element-loading-text="加载中..."
             element-loading-spinner="el-icon-loading"
@@ -34,11 +35,8 @@
             >
           </div>
         </div>
-       
       </div>
     </div>
-  
-   
   </div>
 </template>
 
@@ -51,43 +49,44 @@ import {
   formatPointRange,
   fullScreen,
   exitScreen,
-  debounce
+  debounce,
 } from "./utils/index";
 import { status, generateGrid, drawNavigationLine } from "./draw/index";
 import figureFactory from "./draw/figureFactory.js";
 import topBar from "./components/topBar";
 import tool from "./components/tool";
-import imageEvent from "./draw/imageEvent.js"
+import imageEvent from "./draw/imageEvent.js";
 export default {
   name: "drawboard",
   components: {
     topBar,
     tool,
   },
-  props:{
-    url:{
-      type:String,
-      required: true
+  props: {
+    url: {
+      type: String,
+      required: true,
     },
     sidbarShow: {
       type: Boolean,
-      default:true
+      default: true,
     },
-    userOptions:{
-      type:Object,
-      default:() => {}
+    userOptions: {
+      type: Object,
+      default: () => {},
     },
-    labelDataOrigin:{
+    labelDataOrigin: {
       type: Array,
-      default:() => []
+      default: () => [],
     },
-    loadingData:{
+    loadingData: {
       type: Boolean,
-      default:false
-    }
+      default: false,
+    },
   },
   data() {
     return {
+      sidbarShowTool: true,
       imagePosX: 0,
       imagePosY: 0,
       imageXOffset: 0,
@@ -97,28 +96,28 @@ export default {
       imageScale: 0,
       scale: 1,
       degree: 3600,
-      viewHeight:0,
-      viewWidth:0,
+      viewHeight: 0,
+      viewWidth: 0,
       canvas: null,
       image: null,
       drawboard: null,
       view: null,
       mouseStartPoint: null,
       mouseEndPoint: null,
-      lastMouseEndPoint:null,
-      currentPoint:null,
+      lastMouseEndPoint: null,
+      currentPoint: null,
       currentTool: "",
       graphics: [],
       resultData: [],
       activeGraphic: null,
       activeIndex: -1,
-      pointIndex:-1,
+      pointIndex: -1,
       options: {},
       currentStatus: status.DEFAULT, // DRAWING/MOVING/UPDATING
-      observer:null,
-      isFullScreen:false,
-      loading:false,
-      imagePixelData:[] 
+      observer: null,
+      isFullScreen: false,
+      loading: false,
+      imagePixelData: [],
     };
   },
   computed: {
@@ -132,120 +131,135 @@ export default {
         imageYOffset: this.imageYOffset,
         imageScale: this.imageScale,
         scale: this.scale,
-        degree: this.degree
-      }
-    }
+        degree: this.degree,
+      };
+    },
   },
-  watch:{
-    graphics:{
-      handler(){
-        debounce(this.sendResultData,100)()
-      },
-      deep:true,
-      immediate: true
-    },
-    url:{
-      handler(){
-        if(this.url) {
-          this.loading = true
-          this.loadImage(this.url)
-        }
-      },
-      immediate: true
-    },
-    activeIndex: {
-      handler(val) {
-        if (this.currentStatus === 'UPDATING') {
-          this.$emit('activeIndexChange', val)
-        }
-      },
-      immediate: true
-    },
-    userOptions:{
+  watch: {
+    graphics: {
       handler() {
-        this.options = Object.assign(this.options,JSON.parse(JSON.stringify(this.userOptions)))
+        debounce(this.sendResultData, 100)();
       },
-      deep:true
+      deep: true,
+      immediate: true,
     },
-    labelDataOrigin:{
-      handler(newData){
-        if (newData.length>0) {
-          this.initRenderData(newData)
+    url: {
+      handler() {
+        if (this.url) {
+          this.loading = true;
+          this.loadImage(this.url);
         }
       },
       immediate: true,
-      deep:true
     },
-    loadingData:{
-      handler(){
-        this.loading = this.loadingData
+    activeIndex: {
+      handler(val) {
+        if (this.currentStatus === "UPDATING") {
+          this.$emit("activeIndexChange", val);
+        }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
+    userOptions: {
+      handler() {
+        this.options = Object.assign(
+          this.options,
+          JSON.parse(JSON.stringify(this.userOptions))
+        );
+      },
+      deep: true,
+    },
+    labelDataOrigin: {
+      handler(newData) {
+        if (newData.length > 0) {
+          this.initRenderData(newData);
+        }
+      },
+      immediate: true,
+      deep: true,
+    },
+    loadingData: {
+      handler() {
+        this.loading = this.loadingData;
+      },
+      immediate: true,
+    },
   },
   mounted() {
     this.initSize();
-    this.observerView()
-    this.canvas.addEventListener("mousemove", this.drawNavigationLineEvent, false);
+    this.observerView();
+    this.canvas.addEventListener(
+      "mousemove",
+      this.drawNavigationLineEvent,
+      false
+    );
     this.listenScroll();
-    this.addRightMouseEvent()
+    this.addRightMouseEvent();
   },
   beforeDestroy() {
     this.canvas.removeEventListener("mousemove", this.canvasMousemove, false);
     this.canvas.removeEventListener("mouseup", this.canvasMouseup, false);
     document.removeEventListener("keydown", this.keydownEvent, false);
-    this.observer.disconnect()
+    this.observer.disconnect();
   },
   methods: {
     listenScroll() {
       const w = this;
       (document.onkeydown = (e) => {
-        if (e.keyCode === 17) w.ctrlDown = true
-        if (e.keyCode === 32)  this.currentStatus = status.MOVING;
+        if (e.keyCode === 17) w.ctrlDown = true;
+        if (e.keyCode === 32) this.currentStatus = status.MOVING;
       }),
-      (document.onkeyup = (e) => {
-        if (e.keyCode === 8) this.deleteSelectedRec()
-        if (e.keyCode === 27)  this.currentStatus = status.DEFAULT;
-        if (e.keyCode === 17) w.ctrlDown = false
-      }),
-      document.getElementsByClassName('view')[0].addEventListener('mousewheel',(e) => {
-        e.preventDefault();
-        if(w.ctrlDown) {
-          if(e.wheelDeltaY > 0) {  // 放大
-            this.topBarEvent("zoomIn")
-          } else {  // 缩小
-            this.topBarEvent("zoomOut")
-          }
-        }
-      },false); 
+        (document.onkeyup = (e) => {
+          if (e.keyCode === 8) this.deleteSelectedRec();
+          if (e.keyCode === 27) this.currentStatus = status.DEFAULT;
+          if (e.keyCode === 17) w.ctrlDown = false;
+        }),
+        document.getElementsByClassName("view")[0].addEventListener(
+          "mousewheel",
+          (e) => {
+            e.preventDefault();
+            if (w.ctrlDown) {
+              if (e.wheelDeltaY > 0) {
+                // 放大
+                this.topBarEvent("zoomIn");
+              } else {
+                // 缩小
+                this.topBarEvent("zoomOut");
+              }
+            }
+          },
+          false
+        );
     },
     deleteSelectedRec() {
       this.graphics.splice(this.activeIndex, 1);
       this.drawBG();
-      this.drawGraphics()
+      this.drawGraphics();
     },
     addRightMouseEvent() {
-      let view = document.getElementsByClassName('view')[0]
+      let view = document.getElementsByClassName("view")[0];
       // Prohibit the right mouse button menu display
-      view.oncontextmenu = function(){return false};     
+      view.oncontextmenu = function() {
+        return false;
+      };
       view.addEventListener(
-        'mousedown',
-        e => {
+        "mousedown",
+        (e) => {
           if (e.button === 2) {
             this.currentStatus = status.MOVING;
           }
         },
         false
-      )
+      );
       view.addEventListener(
-        'mouseup',
-        e => {
+        "mouseup",
+        (e) => {
           if (e.button === 2) {
             this.currentStatus = status.DRAWING;
           }
         },
         false
-      )
+      );
     },
     initSize() {
       this.canvas = this.$refs.canvas;
@@ -261,9 +275,9 @@ export default {
       this.canvas.setAttribute("height", this.viewHeight);
       this.canvas.setAttribute("width", this.viewWidth);
       if (this.url) {
-        this.loadImage(this.url)
+        this.loadImage(this.url);
       }
-      if (this.graphics.length>0) {
+      if (this.graphics.length > 0) {
         if (this.canvasCtx) {
           this.drawBG();
           this.drawGraphics();
@@ -271,36 +285,39 @@ export default {
         }
       }
     },
-    observerView(){
-      this.observer = new ResizeObserver(this.initSize)
-      this.observer.observe(this.view)
+    observerView() {
+      this.observer = new ResizeObserver(this.initSize);
+      this.observer.observe(this.view);
     },
     sendResultData() {
       this.resultData = [];
-        this.graphics.forEach(figure => {
-          let tmpFigure = {}
-          tmpFigure.type = figure.type
-          tmpFigure.points = []
-          for (let i = 0; i < figure.points.length; i++) {
-            let tempPoint = canvasToImage(
-              figure.points[i].x,
-              figure.points[i].y,
-              this.imagePosX,
-              this.imagePosY,
-              this.viewWidth,
-              this.viewHeight,
-              this.imageXOffset,
-              this.imageYOffset,
-              this.imageScale,
-              this.scale,
-              this.degree
-            );
-            tmpFigure.points[i] = {x:Math.round(tempPoint.x),y:Math.round(tempPoint.y)}
-          }
-          this.resultData.push(tmpFigure);
-        })
-        
-        this.$emit('updateData',this.resultData)
+      this.graphics.forEach((figure) => {
+        let tmpFigure = {};
+        tmpFigure.type = figure.type;
+        tmpFigure.points = [];
+        for (let i = 0; i < figure.points.length; i++) {
+          let tempPoint = canvasToImage(
+            figure.points[i].x,
+            figure.points[i].y,
+            this.imagePosX,
+            this.imagePosY,
+            this.viewWidth,
+            this.viewHeight,
+            this.imageXOffset,
+            this.imageYOffset,
+            this.imageScale,
+            this.scale,
+            this.degree
+          );
+          tmpFigure.points[i] = {
+            x: Math.round(tempPoint.x),
+            y: Math.round(tempPoint.y),
+          };
+        }
+        this.resultData.push(tmpFigure);
+      });
+
+      this.$emit("updateData", this.resultData);
     },
     getImageInfo(x, y, width, height, scale) {
       this.imagePosX = Math.round(x);
@@ -309,27 +326,36 @@ export default {
       this.imageHeight = height;
       this.imageScale = scale;
       this.loading = false;
-      this.imagePixelData = this.imageCtx.getImageData(this.imagePosX,this.imagePosY,this.imageWidth*this.imageScale,this.imageHeight*this.imageScale);
-      if (this.labelDataOrigin.length>0) {
-        this.initRenderData(this.labelDataOrigin)
+      this.imagePixelData = this.imageCtx.getImageData(
+        this.imagePosX,
+        this.imagePosY,
+        this.imageWidth * this.imageScale,
+        this.imageHeight * this.imageScale
+      );
+      if (this.labelDataOrigin.length > 0) {
+        this.initRenderData(this.labelDataOrigin);
       }
-      this.readyForNewEvent("draw")
+      this.readyForNewEvent("draw");
     },
     loadImage(url) {
       if (this.image) {
-        generateImage(this.image, this.getImageInfo, url)
+        generateImage(this.image, this.getImageInfo, url);
       } else {
-        this.$nextTick(()=>generateImage(this.image, this.getImageInfo, url))
+        this.$nextTick(() => generateImage(this.image, this.getImageInfo, url));
       }
     },
     initRenderData(data) {
-      this.graphics = []
-      let initGraphics = JSON.parse(JSON.stringify(data))
-      initGraphics.forEach((figure,index)=>{
+      this.graphics = [];
+      let initGraphics = JSON.parse(JSON.stringify(data));
+      initGraphics.forEach((figure, index) => {
         let type = figure.type;
-        let tmpfigure = figureFactory(type, figure.points[0],figure.options || {});
-        tmpfigure.points = []
-        figure.points.forEach((point,index)=>{
+        let tmpfigure = figureFactory(
+          type,
+          figure.points[0],
+          figure.options || {}
+        );
+        tmpfigure.points = [];
+        figure.points.forEach((point, index) => {
           tmpfigure.points[index] = imageToCanvas(
             point.x,
             point.y,
@@ -343,40 +369,46 @@ export default {
             this.scale,
             this.degree
           );
-        })
-        this.graphics.push(tmpfigure)
-      })
+        });
+        this.graphics.push(tmpfigure);
+      });
       this.drawBG();
       this.drawGraphics();
     },
     topBarEvent(eventName) {
       switch (eventName) {
         case "zoomIn":
-          this.scale = imageEvent.zoomIn(this.graphics,this.convertParams);
+          this.scale = imageEvent.zoomIn(this.graphics, this.convertParams);
           this.drawBG();
           this.drawGraphics();
           this.updateImage();
           break;
         case "zoomOut":
-          this.scale = imageEvent.zoomOut(this.graphics,this.convertParams);
+          this.scale = imageEvent.zoomOut(this.graphics, this.convertParams);
           this.drawBG();
           this.drawGraphics();
           this.updateImage();
           break;
         case "zoomInit":
-          this.scale = imageEvent.zoomInit(this.graphics,this.convertParams);
+          this.scale = imageEvent.zoomInit(this.graphics, this.convertParams);
           this.drawBG();
           this.drawGraphics();
           this.updateImage();
           break;
         case "rotateRight":
-          this.degree = imageEvent.rotateRight(this.graphics,this.convertParams);
+          this.degree = imageEvent.rotateRight(
+            this.graphics,
+            this.convertParams
+          );
           this.drawBG();
           this.drawGraphics();
           this.updateImage();
           break;
         case "rotateLeft":
-          this.degree = imageEvent.rotateLeft(this.graphics,this.convertParams);
+          this.degree = imageEvent.rotateLeft(
+            this.graphics,
+            this.convertParams
+          );
           this.drawBG();
           this.drawGraphics();
           this.updateImage();
@@ -389,11 +421,11 @@ export default {
           break;
         case "fullScreen":
           if (this.isFullScreen) {
-            exitScreen(this.drawboard)
-            this.isFullScreen = false
-          }else{
+            exitScreen(this.drawboard);
+            this.isFullScreen = false;
+          } else {
             fullScreen(this.drawboard);
-            this.isFullScreen = true
+            this.isFullScreen = true;
           }
           break;
         default:
@@ -414,64 +446,76 @@ export default {
     },
     clearAll() {
       this.graphics = [];
-      this.$emit("clearAllCb")
+      this.$emit("clearAllCb");
       this.drawBG();
       this.readyForNewEvent("draw");
     },
     // Initialize the canvas
     drawBG() {
-      this.canvasCtx.clearRect(0, 0, this.viewWidth, this.viewHeight);
+      try {
+        this.canvasCtx.clearRect(0, 0, this.viewWidth, this.viewHeight);
+      } catch (error) {
+        console.log(error);
+      }
       if (this.options.grid) {
         generateGrid(this.canvas, "lightGray", 10, 10);
       }
     },
     // draing
     drawGraphics() {
-     
       this.graphics.forEach((graphic, index) => {
         // format point range when the point exceeds the image boundary
-        graphic.points.forEach((point,index)=>{
-          graphic.points[index] = formatPointRange(
-            point,
-            this.imagePosX,
-            this.imagePosY,
-            this.viewWidth,
-            this.viewHeight,
-            this.imageWidth,
-            this.imageHeight,
-            this.imageXOffset,
-            this.imageYOffset,
-            this.imageScale,
-            this.scale,
-            this.degree
-          );
-        })
-        // computedCenter
-        graphic.computedCenter()
-        graphic.draw(this.canvasCtx);
-        if (this.activeIndex === index && this.currentStatus === status.UPDATING) {
-          graphic.drawPoints(this.canvasCtx);
-        }
-        if (this.options.guid) {
-          drawNavigationLine(this.canvas, this.currentPoint.x, this.currentPoint.y);
+        if (graphic) {
+          graphic.points.forEach((point, index) => {
+            graphic.points[index] = formatPointRange(
+              point,
+              this.imagePosX,
+              this.imagePosY,
+              this.viewWidth,
+              this.viewHeight,
+              this.imageWidth,
+              this.imageHeight,
+              this.imageXOffset,
+              this.imageYOffset,
+              this.imageScale,
+              this.scale,
+              this.degree
+            );
+          });
+          // computedCenter
+          graphic.computedCenter();
+          graphic.draw(this.canvasCtx);
+          if (
+            this.activeIndex === index &&
+            this.currentStatus === status.UPDATING
+          ) {
+            graphic.drawPoints(this.canvasCtx);
+          }
+          if (this.options.guid) {
+            drawNavigationLine(
+              this.canvas,
+              this.currentPoint.x,
+              this.currentPoint.y
+            );
+          }
         }
       });
     },
-    drawNavigationLineEvent(e){
+    drawNavigationLineEvent(e) {
       this.drawBG();
       this.drawGraphics();
       if (this.options.guid) {
         this.currentPoint = windowToCanvas(this.canvas, e.clientX, e.clientY);
-        drawNavigationLine(this.canvas, this.currentPoint.x, this.currentPoint.y);
+        drawNavigationLine(
+          this.canvas,
+          this.currentPoint.x,
+          this.currentPoint.y
+        );
       }
     },
     canvasMousedown(e) {
       if (this.currentStatus === status.DEFAULT) return;
-      this.mouseStartPoint = windowToCanvas(
-        this.canvas,
-        e.clientX,
-        e.clientY
-      );
+      this.mouseStartPoint = windowToCanvas(this.canvas, e.clientX, e.clientY);
       this.lastMouseEndPoint = this.mouseStartPoint;
       this.canvas.addEventListener("mousemove", this.canvasMousemove, false);
       this.canvas.addEventListener("mouseup", this.canvasMouseup, false);
@@ -481,7 +525,7 @@ export default {
       if (this.currentStatus === status.DRAWING) {
         if (this.activeGraphic == null) {
           for (let i = 0; i < this.graphics.length; i++) {
-            // updating 
+            // updating
             if (
               this.graphics[i].isInPath(this.canvasCtx, this.mouseStartPoint) >
               -1
@@ -511,7 +555,7 @@ export default {
                 this.mouseStartPoint
               )
             ) {
-              this.readyForNewEvent("draw")
+              this.readyForNewEvent("draw");
               this.drawBG();
               this.drawGraphics();
               this.drawEventDone();
@@ -520,13 +564,11 @@ export default {
             }
           }
         }
-      } else if(this.currentStatus === status.UPDATING){
-        
+      } else if (this.currentStatus === status.UPDATING) {
         for (let i = 0; i < this.graphics.length; i++) {
           // 选中控制点后拖拽修改图形
           if (
-            this.graphics[i].isInPath(this.canvasCtx, this.mouseStartPoint) >
-            -1
+            this.graphics[i].isInPath(this.canvasCtx, this.mouseStartPoint) > -1
           ) {
             this.canvas.style.cursor = "default";
             this.activeGraphic = this.graphics[i];
@@ -539,7 +581,10 @@ export default {
             this.currentStatus = status.DRAWING;
           }
         }
-        this.pointIndex = this.activeGraphic.isInPath(this.canvasCtx,this.mouseStartPoint)
+        this.pointIndex = this.activeGraphic.isInPath(
+          this.canvasCtx,
+          this.mouseStartPoint
+        );
       }
     },
     canvasMousemove(e) {
@@ -549,66 +594,90 @@ export default {
           this.imageXOffset + (this.mouseEndPoint.x - this.mouseStartPoint.x);
         let translateY =
           this.imageYOffset + (this.mouseEndPoint.y - this.mouseStartPoint.y);
-        let tmpConvertParams = JSON.parse(JSON.stringify(this.convertParams))
-        let tmpGraphics = imageEvent.formatPointsInImageWhenMove(this.graphics,tmpConvertParams);
+        let tmpConvertParams = JSON.parse(JSON.stringify(this.convertParams));
+        let tmpGraphics = imageEvent.formatPointsInImageWhenMove(
+          this.graphics,
+          tmpConvertParams
+        );
         this.image.style.transform = `scale(${this.scale},${this.scale}) translate(${translateX}px,${translateY}px) rotateZ(${this.degree}deg)`;
         tmpConvertParams.imageXOffset = translateX;
         tmpConvertParams.imageYOffset = translateY;
-        imageEvent.formatPointsInCanvasWhenMove(tmpGraphics,tmpConvertParams);
+        imageEvent.formatPointsInCanvasWhenMove(tmpGraphics, tmpConvertParams);
         this.drawBG();
-        imageEvent.drawTmpGraphics(tmpGraphics,this.canvasCtx)
-      } else if(this.currentStatus === status.UPDATING && this.activeGraphic) {
+        imageEvent.drawTmpGraphics(tmpGraphics, this.canvasCtx);
+      } else if (this.currentStatus === status.UPDATING && this.activeGraphic) {
         this.drawBG();
         this.drawGraphics();
         if (this.pointIndex > -1) {
           if (this.pointIndex === 999) {
+            console.log(this.activeGraphic, "this.activeGraphic");
             this.activeGraphic.move(this.lastMouseEndPoint, this.mouseEndPoint);
-            this.lastMouseEndPoint = this.mouseEndPoint
+            this.lastMouseEndPoint = this.mouseEndPoint;
+            console.log(this.lastMouseEndPoint);
+            console.log("up----------------");
           } else {
             this.activeGraphic.update(this.pointIndex, this.mouseEndPoint);
           }
         }
-      }else if (this.currentStatus === status.DRAWING && this.activeGraphic) {
+      } else if (this.currentStatus === status.DRAWING && this.activeGraphic) {
         this.drawBG();
         this.drawGraphics();
         if (["polygon", "polyline"].includes(this.currentTool)) {
-          let pointIndex = this.activeGraphic.isInPath(this.canvasCtx,this.mouseEndPoint);
+          let pointIndex = this.activeGraphic.isInPath(
+            this.canvasCtx,
+            this.mouseEndPoint
+          );
           if (pointIndex === 0) {
-            this.focusCicle(this.canvasCtx,this.activeGraphic.points[0],this.options.point_lineWidth,this.options.point_strokeStyle,this.options.point_radis*2)
+            this.focusCicle(
+              this.canvasCtx,
+              this.activeGraphic.points[0],
+              this.options.point_lineWidth,
+              this.options.point_strokeStyle,
+              this.options.point_radis * 2
+            );
           }
-          this.previewGraphic(this.canvasCtx,this.activeGraphic,this.mouseEndPoint)
-        }else if(["rectangle"].includes(this.currentTool)) {
-          this.activeGraphic.initFigure(this.mouseStartPoint,this.mouseEndPoint)
+          this.previewGraphic(
+            this.canvasCtx,
+            this.activeGraphic,
+            this.mouseEndPoint
+          );
+        } else if (["rectangle"].includes(this.currentTool)) {
+          this.activeGraphic.initFigure(
+            this.mouseStartPoint,
+            this.mouseEndPoint
+          );
         }
       }
     },
     canvasMouseup(e) {
       if (this.currentStatus === status.MOVING) {
-        imageEvent.formatPointsInImage(this.graphics,this.convertParams);
-        this.imageXOffset += (this.mouseEndPoint.x - this.mouseStartPoint.x);
-        this.imageYOffset += (this.mouseEndPoint.y - this.mouseStartPoint.y);
-        imageEvent.formatPointsInCanvas(this.graphics,this.convertParams);
+        imageEvent.formatPointsInImage(this.graphics, this.convertParams);
+        this.imageXOffset += this.mouseEndPoint.x - this.mouseStartPoint.x;
+        this.imageYOffset += this.mouseEndPoint.y - this.mouseStartPoint.y;
+        imageEvent.formatPointsInCanvas(this.graphics, this.convertParams);
         this.drawBG();
         this.drawGraphics();
         this.updateImage();
-        this.readyForNewEvent("move")
-      } else if(this.currentStatus === status.UPDATING) {
+        this.readyForNewEvent("move");
+      } else if (this.currentStatus === status.UPDATING) {
         if (this.activeGraphic) {
           this.drawBG();
           this.drawGraphics();
         }
-        this.readyForNewEvent("update")
-      }else if (this.currentStatus === status.DRAWING) {
-
-        const index = this.graphics.findIndex(item => {
-          return item.points.every((point,index) => {
+        this.readyForNewEvent("update");
+      } else if (this.currentStatus === status.DRAWING) {
+        const index = this.graphics.findIndex((item) => {
+          return item.points.every((point, index) => {
             if (item.points[index + 1]) {
-              return item.points[index].x === item.points[index + 1].x && item.points[index].y === item.points[index + 1].y
+              return (
+                item.points[index].x === item.points[index + 1].x &&
+                item.points[index].y === item.points[index + 1].y
+              );
             } else {
-              return true
+              return true;
             }
-          })
-        })
+          });
+        });
 
         if (index >= 0) {
           this.graphics.splice(index, 1);
@@ -617,19 +686,19 @@ export default {
           this.drawBG();
           this.drawGraphics();
         }
-        if (!(["polygon", "polyline"].includes(this.currentTool))) {
+        if (!["polygon", "polyline"].includes(this.currentTool)) {
           this.readyForNewEvent();
           this.drawEventDone();
         }
       }
     },
-    readyForNewEvent(evevt="draw") {
+    readyForNewEvent(evevt = "draw") {
       this.canvas.style.cursor = "default";
       if (evevt === "draw") {
         this.activeIndex = -1;
         this.activeGraphic = null;
         this.currentStatus = status.DRAWING;
-      }else if(evevt === "move") {
+      } else if (evevt === "move") {
         this.activeIndex = -1;
         this.activeGraphic = null;
         this.currentStatus = status.MOVING;
@@ -638,23 +707,16 @@ export default {
       this.canvas.removeEventListener("mousemove", this.canvasMousemove, false);
       this.canvas.removeEventListener("mouseup", this.canvasMouseup, false);
     },
-    focusCicle(ctx,point,lineWidth=2,color='#999',radis=10) {
+    focusCicle(ctx, point, lineWidth = 2, color = "#999", radis = 10) {
       ctx.save();
       ctx.lineWidth = lineWidth;
       ctx.strokeStyle = color;
       ctx.beginPath();
-      ctx.arc(
-        point.x,
-        point.y,
-        radis,
-        0,
-        Math.PI * 2,
-        false
-      );
+      ctx.arc(point.x, point.y, radis, 0, Math.PI * 2, false);
       ctx.stroke();
       ctx.restore();
     },
-    previewGraphic(ctx,graphic,point,fillStyle='hsla(0,100%,50%,.3)') {
+    previewGraphic(ctx, graphic, point, fillStyle = "hsla(0,100%,50%,.3)") {
       ctx.save();
       ctx.beginPath();
       graphic.points.forEach((p, i) => {
@@ -665,19 +727,19 @@ export default {
       ctx.lineWidth = graphic.path_lineWidth;
       ctx.stroke();
       ctx.fillStyle = fillStyle;
-      if(graphic.type === "polygon") ctx.fill();
+      if (graphic.type === "polygon") ctx.fill();
       ctx.restore();
     },
     keydownEvent(e) {
       if (e.keyCode == 13) {
-        this.readyForNewEvent("draw")  
+        this.readyForNewEvent("draw");
         this.drawBG();
         this.drawGraphics();
       } else if (e.keyCode == 46) {
         if (this.activeIndex > -1) {
           this.graphics.splice(this.activeIndex, 1);
-          this.$emit("deleteFigureCb",this.activeIndex);
-          this.readyForNewEvent("draw")
+          this.$emit("deleteFigureCb", this.activeIndex);
+          this.readyForNewEvent("draw");
           this.drawBG();
           this.drawGraphics();
         }
@@ -686,15 +748,15 @@ export default {
     deleteFigure(index) {
       if (index > -1) {
         this.graphics.splice(index, 1);
-        this.readyForNewEvent("draw")
+        this.readyForNewEvent("draw");
         this.drawBG();
         this.drawGraphics();
       }
     },
     selectedFigure(index) {
       if (index > -1) {
-        this.activeIndex=index
-        this.currentStatus = status.UPDATING
+        this.activeIndex = index;
+        this.currentStatus = status.UPDATING;
         this.drawBG();
         this.drawGraphics();
       }
@@ -703,88 +765,97 @@ export default {
       this.image.style.transform = `scale(${this.scale},${this.scale}) translate(${this.imageXOffset}px,${this.imageYOffset}px) rotateZ(${this.degree}deg)`;
     },
 
-
     drawEventDone() {
-      this.$emit('drawEventDone')
+      this.$emit("drawEventDone");
     },
     contrastChange(radio) {
-      this.changePixelForContrast(radio)
+      this.changePixelForContrast(radio);
     },
     brightnessChange(radio) {
-      this.changePixelForBright(radio)
+      this.changePixelForBright(radio);
     },
     changePixelForContrast(radio) {
       if (!this.imageCtx) return;
-      let imageData = this.imageCtx.getImageData(this.imagePosX,this.imagePosY,this.imageWidth*this.imageScale,this.imageHeight*this.imageScale);
-      
+      let imageData = this.imageCtx.getImageData(
+        this.imagePosX,
+        this.imagePosY,
+        this.imageWidth * this.imageScale,
+        this.imageHeight * this.imageScale
+      );
+
       let data = imageData.data;
-      let data0 = this.imagePixelData.data
+      let data0 = this.imagePixelData.data;
       // RGB = RGB + (RGB - avg) * Contrast / 255
-      let avg_r = 0
-      let avg_g = 0
-      let avg_b = 0
-      for ( var i = 0; i < data0.length; i += 4 ) {
-        avg_r += data0[i]
-        avg_g += data0[i+1]
-        avg_b += data0[i+2]
+      let avg_r = 0;
+      let avg_g = 0;
+      let avg_b = 0;
+      for (var i = 0; i < data0.length; i += 4) {
+        avg_r += data0[i];
+        avg_g += data0[i + 1];
+        avg_b += data0[i + 2];
       }
-      avg_r /= (data0.length/4)
-      avg_g /= (data0.length/4)
-      avg_b /= (data0.length/4)
-      for ( var i = 0; i < data.length; i += 4 ) {
-        data[i] = data0[i] + (data0[i] - avg_r) * radio / 50
+      avg_r /= data0.length / 4;
+      avg_g /= data0.length / 4;
+      avg_b /= data0.length / 4;
+      for (var i = 0; i < data.length; i += 4) {
+        data[i] = data0[i] + ((data0[i] - avg_r) * radio) / 50;
         if (data[i] > 255) {
           data[i] = 255;
-        } else if(data[i] < 0) {
+        } else if (data[i] < 0) {
           data[i] = 0;
         }
-        data[i+1] = data0[i+1] + (data0[i+1] - avg_g) * radio / 50
-        if (data[i+1] > 255) {
-          data[i+1] = 255;
-        } else if (data[i+1] < 0) {
-          data[i+1] = 0;
+        data[i + 1] = data0[i + 1] + ((data0[i + 1] - avg_g) * radio) / 50;
+        if (data[i + 1] > 255) {
+          data[i + 1] = 255;
+        } else if (data[i + 1] < 0) {
+          data[i + 1] = 0;
         }
-        data[i+2] = data0[i+2] + (data0[i+2] - avg_b) * radio / 50
-        if (data[i+2] > 255) {
-          data[i+2] = 255;
-        } else if (data[i+2] < 0) {
-          data[i+2] = 0;
+        data[i + 2] = data0[i + 2] + ((data0[i + 2] - avg_b) * radio) / 50;
+        if (data[i + 2] > 255) {
+          data[i + 2] = 255;
+        } else if (data[i + 2] < 0) {
+          data[i + 2] = 0;
         }
       }
-      this.imageCtx.putImageData(imageData,this.imagePosX,this.imagePosY);
+      this.imageCtx.putImageData(imageData, this.imagePosX, this.imagePosY);
     },
     changePixelForBright(radio) {
       if (!this.imageCtx) return;
-      let imageData = this.imageCtx.getImageData(this.imagePosX,this.imagePosY,this.imageWidth*this.imageScale,this.imageHeight*this.imageScale);
+      let imageData = this.imageCtx.getImageData(
+        this.imagePosX,
+        this.imagePosY,
+        this.imageWidth * this.imageScale,
+        this.imageHeight * this.imageScale
+      );
       let data = imageData.data;
-      let data0 = this.imagePixelData.data
-      let newRadio = parseInt(radio/50*255)
-      for(var i = 0; i < data.length; i += 4 ) {
-        if(data0[i]+newRadio>255){
-          data[i]=255;
-        }else if(data0[i]+newRadio<0){
-          data[i]=0;
-        }else {
-          data[i] = data0[i]+ newRadio;
+      let data0 = this.imagePixelData.data;
+      let newRadio = parseInt((radio / 50) * 255);
+      for (var i = 0; i < data.length; i += 4) {
+        if (data0[i] + newRadio > 255) {
+          data[i] = 255;
+        } else if (data0[i] + newRadio < 0) {
+          data[i] = 0;
+        } else {
+          data[i] = data0[i] + newRadio;
         }
-        if((data0[i+1]+newRadio)>255){
-          data[i+1]=255;
-        }else if((data0[i+1]+newRadio)<0){
-          data[i+1]=0;
-        }else {
-          data[i+1] = data0[i+1]+ newRadio;
+        if (data0[i + 1] + newRadio > 255) {
+          data[i + 1] = 255;
+        } else if (data0[i + 1] + newRadio < 0) {
+          data[i + 1] = 0;
+        } else {
+          data[i + 1] = data0[i + 1] + newRadio;
         }
-        if((data0[i+2]+newRadio)>255){
-          data[i+2]=255;
-        }else if((data0[i+2]+newRadio)<0){
-          data[i+2]=0;
-        }else{
-          data[i+2] = data0[i+2] + newRadio;
+        if (data0[i + 2] + newRadio > 255) {
+          data[i + 2] = 255;
+        } else if (data0[i + 2] + newRadio < 0) {
+          data[i + 2] = 0;
+        } else {
+          data[i + 2] = data0[i + 2] + newRadio;
         }
       }
-      this.imageCtx.putImageData(imageData,this.imagePosX,this.imagePosY);
-    }
-  }
+      this.imageCtx.putImageData(imageData, this.imagePosX, this.imagePosY);
+    },
+  },
 };
 </script>
 
