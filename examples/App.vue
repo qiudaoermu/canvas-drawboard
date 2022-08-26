@@ -2,8 +2,8 @@
   <div>
     <drawboard
       :url="url"
-      style="width:550px;height:450px"
       @updateData="updateData"
+      style="width:550px;height:400px"
       :labelDataOrigin="labelDataOrigin"
     ></drawboard>
   </div>
