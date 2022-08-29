@@ -3,7 +3,7 @@
     <drawboard
       :url="url"
       @updateData="updateData"
-      style="width:550px;height:400px"
+      style="width:350px;height:400px"
       :labelDataOrigin="labelDataOrigin"
     ></drawboard>
   </div>

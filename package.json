@@ -1,11 +1,12 @@
 {
   "name": "canvas-drawboard",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "license": "MIT",
   "description": "a drawboard based on vue2.x",
   "scripts": {
     "start": "npm run serve",
     "serve": "vue-cli-service serve",
+    "prepare": "npm run build && npm --no-git-tag-version version patch",
     "build": "vue-cli-service build --target lib --name drawboard --dest lib packages/index.js"
   },
   "author": "qiudaoermu",
