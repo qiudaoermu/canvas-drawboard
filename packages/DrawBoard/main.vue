@@ -8,6 +8,7 @@
         <div class="wrapper">
           <div class="tools" v-if="sidbarShow">
             <tool
+              :path_strokeStyle="path_strokeStyle"
               @toolSelected="toolSelected"
               @topBarEvent="topBarEvent"
               @configChange="configChange"
@@ -63,6 +64,18 @@ export default {
     tool,
   },
   props: {
+    path_strokeStyle: {
+      type: String,
+      default: "#E1EE51",
+    },
+    height: {
+      type: Number,
+      default: 400,
+    },
+    width: {
+      type: Number,
+      default: 350,
+    },
     url: {
       type: String,
       required: true,
@@ -268,8 +281,8 @@ export default {
       this.imageCtx = this.image.getContext("2d");
       this.drawboard = this.$refs.drawboard;
       this.view = this.$refs.view;
-      this.viewHeight = this.view.offsetHeight;
-      this.viewWidth = this.view.offsetWidth;
+      this.viewHeight = this.height;
+      this.viewWidth = this.width - 40;
       this.image.setAttribute("height", this.viewHeight);
       this.image.setAttribute("width", this.viewWidth);
       this.canvas.setAttribute("height", this.viewHeight);
@@ -288,6 +301,7 @@ export default {
     observerView() {
       this.observer = new ResizeObserver(this.initSize);
       this.observer.observe(this.view);
+      // this.initSize()
     },
     sendResultData() {
       this.resultData = [];

@@ -14,13 +14,14 @@ import 'canvas-drawboard/lib/drawboard.css'
  
 Vue.use(DrawBoard);
 ```
-![](https://i.bmp.ovh/imgs/2022/07/26/ab3e0a62263160f4.png)
+
+![image](https://i.ibb.co/PF510RK/i-Shot2022-09-06-13-19-55.png)
 
 ## Example
 ```vue
 <template>
   <div id="app">
-    <drawboard :url="url" @updateData="updateData" @drawEventDone="drawEventDone"></drawboard>
+    <drawboard :url="url" @updateData="updateData"  :labelDataOrigin="labelDataOrigin" @drawEventDone="drawEventDone"></drawboard>
   </div>
 </template>
 
@@ -30,6 +31,40 @@ export default {
   name: 'App',
   data() {
     return {
+       labelDataOrigin: [
+        {
+          type: "rectangle",
+          points: [
+            { x: 228, y: 240 },
+            { x: 287, y: 240 },
+            { x: 287, y: 286 },
+            { x: 228, y: 286 },
+          ],
+          options: {
+            path_lineWidth: "4",
+            path_strokeStyle: "#f00",
+            point_radis: "5", // Judge whether to select the point when clicking
+            point_lineWidth: "2",
+            point_strokeStyle: "#999", // The color of the point when selected
+          },
+        },
+        {
+          type: "rectangle",
+          points: [
+            { x: 402, y: 214 },
+            { x: 438, y: 214 },
+            { x: 438, y: 249 },
+            { x: 402, y: 249 },
+          ],
+          options: {
+            path_lineWidth: "4",
+            path_strokeStyle: "#f00",
+            point_radis: "5", // Judge whether to select the point when clicking
+            point_lineWidth: "2",
+            point_strokeStyle: "#999", // The color of the point when selected
+          },
+        },
+      ],
       url:'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'
     }
   },

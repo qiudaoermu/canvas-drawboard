@@ -11,7 +11,7 @@ export function generateImage(canvas, cb, url) {
   let img = new Image();
   img.src = url;
   let imageWidth, imageHeight, scaleValue, posX, posY;
-  img.setAttribute('crossOrigin', 'Anonymous');
+  img.setAttribute('crossOrigin', 'undefined');
   img.onload = function () {
     imageWidth = img.width;
     imageHeight = img.height;
