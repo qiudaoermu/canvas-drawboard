@@ -1,32 +1,21 @@
 <template>
   <div class="tool">
-    <el-tooltip effect="dark" content="矩形" placement="right">
-      <i class="el-icon-news" @click="changeTool('rectangle')"></i>
-    </el-tooltip>
-    <el-tooltip effect="dark" content="点" placement="right">
-      <i class="el-icon-aim" @click="changeTool('point')"></i>
-    </el-tooltip>
-    <el-tooltip effect="dark" content="放大" placement="bottom" class="icon">
-      <i class="el-icon-zoom-in" @click="changeEvent('zoomIn')"></i>
-    </el-tooltip>
-    <el-tooltip effect="dark" content="缩小" placement="bottom">
-      <i class="el-icon-zoom-out" @click="changeEvent('zoomOut')"></i>
-    </el-tooltip>
-    <el-tooltip effect="dark" content="适配" placement="bottom">
-      <i class="el-icon-s-grid" @click="changeEvent('zoomInit')"></i>
-    </el-tooltip>
-    <el-tooltip effect="dark" content="移动" placement="bottom">
-      <i class="el-icon-rank" @click="changeEvent('move')"></i>
-    </el-tooltip>
-    <el-tooltip effect="dark" content="全屏" placement="bottom">
-      <i class="el-icon-full-screen" @click="changeEvent('fullScreen')"></i>
-    </el-tooltip>
-
-    <el-tooltip effect="dark" content="清空画布" placement="bottom">
-      <i class="el-icon-delete" @click="changeEvent('clearAll')"></i>
-    </el-tooltip>
-    <el-tooltip effect="dark" content="设置" placement="bottom">
-      <i class="el-icon-setting" @click="configDialogVisiable = true"></i>
+    <el-tooltip
+      v-for="(item, index) in setting"
+      effect="dark"
+      :content="item.content"
+      placement="right"
+    >
+      <i
+        :class="[{ active: index === active }, item.class]"
+        v-if="index < 1"
+        @click="changeTool(item.event, index)"
+      ></i>
+      <i
+        v-else
+        :class="[{ active: index === active }, item.class]"
+        @click="changeEvent(item.event, index)"
+      ></i>
     </el-tooltip>
 
     <!-- <div class="status">
@@ -49,7 +38,7 @@
       >
         <el-form-item label="线框颜色：">
           <el-color-picker
-            v-model="path_strokeStyle"
+            v-model="config.path_strokeStyle"
             size="mini"
           ></el-color-picker>
         </el-form-item>
@@ -108,14 +97,51 @@
 </template>
 
 <script>
+// 先执行 props 再执行 data函数 再执行 render
 export default {
   name: "topbar",
   props: {
     currentStatus: String,
-    path_strokeStyle: String
+    path_strokeStyle: String,
   },
   data() {
     return {
+      active: Infinity,
+      setting: [
+        { class: "el-icon-news", event: "rectangle", content: "矩形" },
+        { class: "el-icon-zoom-in", event: "zoomIn", content: "放大" },
+        {
+          class: "el-icon-zoom-out",
+          event: "zoomOut",
+          content: "缩小",
+        },
+        {
+          class: "el-icon-s-grid",
+          event: "zoomInit",
+          content: "适配",
+        },
+        {
+          class: "el-icon-rank",
+          event: "move",
+          content: "移动",
+        },
+        {
+          class: "el-icon-full-screen",
+          event: "fullScreen",
+          content: "全屏",
+        },
+        {
+          class: "el-icon-delete",
+          event: "clearAll",
+          content: "清空画布",
+        },
+        {
+          class: "el-icon-setting",
+          event: "setting",
+          content: "设置",
+        },
+      ],
+      color1: "#409EFF",
       configDialogVisiable: false,
       contrast: 50, // 对比度
       brightness: 50, // 亮度
@@ -156,10 +182,16 @@ export default {
     },
   },
   methods: {
-    changeTool(eventName) {
+    changeTool(eventName, index) {
+      this.active = index;
       this.$emit("toolSelected", eventName);
     },
-    changeEvent(eventName) {
+    changeEvent(eventName, index) {
+      this.active = index;
+      if (eventName === "setting") {
+        this.configDialogVisiable = true;
+        return;
+      }
       this.$emit("topBarEvent", eventName);
     },
     formatTooltip(val) {
@@ -173,6 +205,9 @@ export default {
 .tool {
   width: 30px;
   margin: 0px 5px;
+  .active {
+    background: #000;
+  }
 }
 [class*=" el-icon-"],
 [class^="el-icon-"] {
@@ -182,7 +217,7 @@ export default {
   line-height: 30px;
   font-size: 20px;
   padding: 0 5px;
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.4);
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
   cursor: pointer;
   &:nth-child(1) {
     margin-top: 5px;

@@ -23,7 +23,7 @@
     flex-direction: row;
     .tools {
       flex: 0 0 $topBarWidth;
-      background-color: $drawboardBg;
+      background-color: $wrapperBg;
     }
     .view {
       flex: 1 1 0;

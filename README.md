@@ -15,7 +15,7 @@ import 'canvas-drawboard/lib/drawboard.css'
 Vue.use(DrawBoard);
 ```
 
-![image](https://i.ibb.co/PF510RK/i-Shot2022-09-06-13-19-55.png)
+![image](https://i.ibb.co/7rFLVpV/Xnip2022-09-08-13-32-53.png)
 
 ## Example
 ```vue
@@ -57,10 +57,10 @@ export default {
             { x: 402, y: 249 },
           ],
           options: {
-            path_lineWidth: "4",
+            path_lineWidth: 4,
             path_strokeStyle: "#f00",
-            point_radis: "5", // Judge whether to select the point when clicking
-            point_lineWidth: "2",
+            point_radis: 5, // Judge whether to select the point when clicking
+            point_lineWidth: 2,
             point_strokeStyle: "#999", // The color of the point when selected
           },
         },
@@ -100,10 +100,10 @@ export default {
       {"x":228,"y":286}
     ],
     "options":{
-      "path_lineWidth":"4",
+      "path_lineWidth":5,
       "path_strokeStyle":"#f00",
-      "point_radis":"5", // Judge whether to select the point when clicking
-      "point_lineWidth":"2",
+      "point_radis":5, // Judge whether to select the point when clicking
+      "point_lineWidth":2,
       "point_strokeStyle":"#999" // The color of the point when selected
     }
   },
@@ -116,10 +116,10 @@ export default {
       {"x":402,"y":249}
     ],
     "options":{
-      "path_lineWidth":"4",
+      "path_lineWidth":4,
       "path_strokeStyle":"#f00",
-      "point_radis":"5", // Judge whether to select the point when clicking
-      "point_lineWidth":"2",
+      "point_radis":5, // Judge whether to select the point when clicking
+      "point_lineWidth":2,
       "point_strokeStyle":"#999" // The color of the point when selected
     }
   }

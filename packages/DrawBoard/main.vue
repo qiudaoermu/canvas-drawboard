@@ -1,5 +1,8 @@
 <template>
-  <div class="container">
+  <div
+    class="container"
+    :style="{ height: this.height + 'px', width: this.width + 'px' }"
+  >
     <div class="drawboard" ref="drawboard">
       <div class="center">
         <!-- <div class="topBar">
@@ -151,7 +154,7 @@ export default {
   watch: {
     graphics: {
       handler() {
-        debounce(this.sendResultData, 100)();
+        // debounce(this.sendResultData, 100)();
       },
       deep: true,
       immediate: true,
@@ -281,8 +284,8 @@ export default {
       this.imageCtx = this.image.getContext("2d");
       this.drawboard = this.$refs.drawboard;
       this.view = this.$refs.view;
-      this.viewHeight = this.height;
-      this.viewWidth = this.width - 40;
+      this.viewHeight = this.view.offsetHeight || this.height;
+      this.viewWidth = this.view.offsetWidth || this.width - 40;
       this.image.setAttribute("height", this.viewHeight);
       this.image.setAttribute("width", this.viewWidth);
       this.canvas.setAttribute("height", this.viewHeight);
@@ -301,7 +304,6 @@ export default {
     observerView() {
       this.observer = new ResizeObserver(this.initSize);
       this.observer.observe(this.view);
-      // this.initSize()
     },
     sendResultData() {
       this.resultData = [];
@@ -323,6 +325,8 @@ export default {
             this.scale,
             this.degree
           );
+          tmpFigure.options = {};
+          tmpFigure.options.path_strokeStyle = figure.path_strokeStyle;
           tmpFigure.points[i] = {
             x: Math.round(tempPoint.x),
             y: Math.round(tempPoint.y),
@@ -360,7 +364,20 @@ export default {
     },
     initRenderData(data) {
       this.graphics = [];
-      let initGraphics = JSON.parse(JSON.stringify(data));
+      data = [...data, ...this.resultData];
+
+      let uniqData = [];
+      for (let i = 0; i < data.length; i++) {
+        if (
+          uniqData.every(
+            (item) =>
+              JSON.stringify(item.points) !== JSON.stringify(data[i].points)
+          )
+        ) {
+          uniqData.push(data[i]);
+        }
+      }
+      let initGraphics = JSON.parse(JSON.stringify(uniqData));
       initGraphics.forEach((figure, index) => {
         let type = figure.type;
         let tmpfigure = figureFactory(
@@ -495,6 +512,7 @@ export default {
               this.scale,
               this.degree
             );
+
           });
           // computedCenter
           graphic.computedCenter();
@@ -624,11 +642,8 @@ export default {
         this.drawGraphics();
         if (this.pointIndex > -1) {
           if (this.pointIndex === 999) {
-            console.log(this.activeGraphic, "this.activeGraphic");
             this.activeGraphic.move(this.lastMouseEndPoint, this.mouseEndPoint);
             this.lastMouseEndPoint = this.mouseEndPoint;
-            console.log(this.lastMouseEndPoint);
-            console.log("up----------------");
           } else {
             this.activeGraphic.update(this.pointIndex, this.mouseEndPoint);
           }
@@ -705,6 +720,7 @@ export default {
           this.drawEventDone();
         }
       }
+      this.sendResultData();
     },
     readyForNewEvent(evevt = "draw") {
       this.canvas.style.cursor = "default";

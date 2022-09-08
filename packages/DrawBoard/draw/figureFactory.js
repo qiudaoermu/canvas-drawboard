@@ -32,17 +32,15 @@ class Graph {
   }
   move(startPoint, endPoint) {
     let x1 = endPoint.x - startPoint.x;
-    console.log(endPoint.x, startPoint.x, x1);
     let y1 = endPoint.y - startPoint.y;
-    console.log(endPoint.y, startPoint.y, y1);
-    console.log(this.points, "points--------------before");
     this.points = this.points.map((item) => {
+      let x = item.x + x1;
+      let y = item.y+ y1;
       return {
-        x: item.x + x1,
-        y: item.y + y1,
+        x,
+        y
       };
     });
-    console.log(this.points, "points--------------after");
     this.computedCenter();
   }
   update(i, point) {
@@ -213,7 +211,6 @@ class Rectangle extends Graph {
     this.y = Math.round((y1 + y2) / 2);
   }
   update(i, point) {
-    console.log("update");
     this.points[i] = point;
     if (i == 0) {
       this.points[1].y = point.y;
