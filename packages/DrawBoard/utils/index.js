@@ -114,12 +114,10 @@ export function imageToCanvas(x, y, posX, posY, canvasWidth, canvasHeight, image
   let xvar, yvar;
   xvar = x * (imageScale * scale) + posX * scale + canvasWidth * (1 - scale) / 2
   yvar = y * (imageScale * scale) + posY * scale + canvasHeight * (1 - scale) / 2
-   console.log(xvar, "xvar");
   if (degree % 360 == 0) {
     x = xvar + imageXOffset * scale
     y = yvar + imageYOffset * scale
-    console.log(imageXOffset * scale, "imageXOffset * scale");
-    console.log(x,"112X")
+    
   } else if (degree % 360 == 90) {
     x = (canvasWidth + canvasHeight) / 2 - yvar + imageXOffset * scale
     y = xvar - (canvasWidth - canvasHeight) / 2 + imageYOffset * scale

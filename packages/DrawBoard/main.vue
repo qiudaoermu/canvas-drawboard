@@ -5,9 +5,6 @@
   >
     <div class="drawboard" ref="drawboard">
       <div class="center">
-        <!-- <div class="topBar">
-          <topBar :currentStatus="currentStatus"></topBar>
-        </div> -->
         <div class="wrapper">
           <div class="tools" v-if="sidbarShow">
             <tool
@@ -187,9 +184,7 @@ export default {
     },
     labelDataOrigin: {
       handler(newData) {
-        if (newData.length > 0) {
-          this.initRenderData(newData);
-        }
+        this.initRenderData(newData);
       },
       immediate: true,
       deep: true,
@@ -203,7 +198,7 @@ export default {
   },
   mounted() {
     this.initSize();
-    this.observerView();
+    // this.observerView();
     this.canvas.addEventListener(
       "mousemove",
       this.drawNavigationLineEvent,
@@ -297,7 +292,7 @@ export default {
         if (this.canvasCtx) {
           this.drawBG();
           this.drawGraphics();
-          this.readyForNewEvent("draw");
+          // this.readyForNewEvent("draw");
         }
       }
     },
@@ -353,7 +348,7 @@ export default {
       if (this.labelDataOrigin.length > 0) {
         this.initRenderData(this.labelDataOrigin);
       }
-      this.readyForNewEvent("draw");
+      // this.readyForNewEvent("draw");
     },
     loadImage(url) {
       if (this.image) {
@@ -364,7 +359,7 @@ export default {
     },
     initRenderData(data) {
       this.graphics = [];
-      data = [...data, ...this.resultData];
+      // data = [...data, ...this.resultData];
 
       let uniqData = [];
       for (let i = 0; i < data.length; i++) {
@@ -512,7 +507,6 @@ export default {
               this.scale,
               this.degree
             );
-
           });
           // computedCenter
           graphic.computedCenter();
@@ -727,6 +721,7 @@ export default {
       if (evevt === "draw") {
         this.activeIndex = -1;
         this.activeGraphic = null;
+        // debugger
         this.currentStatus = status.DRAWING;
       } else if (evevt === "move") {
         this.activeIndex = -1;
