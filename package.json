@@ -1,6 +1,6 @@
 {
   "name": "canvas-drawboard",
-  "version": "0.1.40",
+  "version": "0.1.54",
   "license": "MIT",
   "description": "a drawboard based on vue2.x",
   "scripts": {
@@ -14,7 +14,7 @@
   "main": "lib/drawboard.umd.min.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/qiudaoermu/canavas-drawboard.git"
+    "url": "https://github.com/qiudaoermu/canvas-drawboard.git"
   },
   "dependencies": {
     "core-js": "^3.6.5",

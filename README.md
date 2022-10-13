@@ -21,7 +21,13 @@ Vue.use(DrawBoard);
 ```vue
 <template>
   <div id="app">
-    <drawboard :url="url" @updateData="updateData"  :labelDataOrigin="labelDataOrigin" @drawEventDone="drawEventDone"></drawboard>
+    <drawboard 
+      :url="url" 
+      :height="400" 
+      :width="500" 
+      @updateData="updateData"  
+      :labelDataOrigin="labelDataOrigin" 
+      @drawEventDone="drawEventDone" />
   </div>
 </template>
 
@@ -125,6 +131,19 @@ export default {
   }
 ]
 ```
+
+### height
++ type Number
++ Required: False
++ default: 400
+> you can set the height of the canvas container
+
+### width
++ type Number
++ Required: False
++ default: 350
+> you can set the width of the canvas container
+
 ### userOptions
 + Type: Object
 + Required: False

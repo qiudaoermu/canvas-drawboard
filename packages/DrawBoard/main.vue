@@ -9,6 +9,7 @@
           <div class="tools" v-if="sidbarShow">
             <tool
               :path_strokeStyle="path_strokeStyle"
+              :selected="selected"
               @toolSelected="toolSelected"
               @topBarEvent="topBarEvent"
               @configChange="configChange"
@@ -68,6 +69,10 @@ export default {
       type: String,
       default: "#E1EE51",
     },
+    selectedWithBlock: {
+      type: Boolean,
+      default: false,
+    },
     height: {
       type: Number,
       default: 400,
@@ -126,11 +131,12 @@ export default {
       activeIndex: -1,
       pointIndex: -1,
       options: {},
-      currentStatus: status.DEFAULT, // DRAWING/MOVING/UPDATING
+      currentStatus: status.DRAWING, // DRAWING/MOVING/UPDATING
       observer: null,
       isFullScreen: false,
       loading: false,
       imagePixelData: [],
+      selected: false,
     };
   },
   computed: {
@@ -157,11 +163,13 @@ export default {
       immediate: true,
     },
     url: {
-      handler() {
-        if (this.url) {
+      handler(val) {
+        if (!val) {
+          this.loading = false;
+        } else {
           this.loading = true;
-          this.loadImage(this.url);
         }
+        this.loadImage(val);
       },
       immediate: true,
     },
@@ -184,6 +192,10 @@ export default {
     },
     labelDataOrigin: {
       handler(newData) {
+        console.log(newData, "newDate");
+        if (newData.length && this.selectedWithBlock) {
+          this.selected = true;
+        }
         this.initRenderData(newData);
       },
       immediate: true,
@@ -221,7 +233,7 @@ export default {
         if (e.keyCode === 32) this.currentStatus = status.MOVING;
       }),
         (document.onkeyup = (e) => {
-          if (e.keyCode === 8) this.deleteSelectedRec();
+          // if (e.keyCode === 8) this.deleteSelectedRec();
           if (e.keyCode === 27) this.currentStatus = status.DEFAULT;
           if (e.keyCode === 17) w.ctrlDown = false;
         }),
@@ -360,7 +372,6 @@ export default {
     initRenderData(data) {
       this.graphics = [];
       // data = [...data, ...this.resultData];
-
       let uniqData = [];
       for (let i = 0; i < data.length; i++) {
         if (
@@ -375,10 +386,12 @@ export default {
       let initGraphics = JSON.parse(JSON.stringify(uniqData));
       initGraphics.forEach((figure, index) => {
         let type = figure.type;
+        let direction = figure.direction;
         let tmpfigure = figureFactory(
           type,
           figure.points[0],
-          figure.options || {}
+          figure.options || {},
+          direction
         );
         tmpfigure.points = [];
         figure.points.forEach((point, index) => {

@@ -103,6 +103,10 @@ export default {
   props: {
     currentStatus: String,
     path_strokeStyle: String,
+    selected: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -157,9 +161,6 @@ export default {
       },
     };
   },
-  create() {
-    // this.config.point_strokeStyle = this.path_strokeStyle
-  },
   watch: {
     config: {
       handler() {
@@ -180,6 +181,24 @@ export default {
       },
       immediate: true,
     },
+    selected: {
+      handler() {
+        if (this.selected) {
+          this.$nextTick(() => {
+            this.changeTool("rectangle", 0);
+          });
+        }
+      },
+      immediate: true,
+    },
+    // selected() {
+    //   debugger;
+    //   if (this.selected) {
+    //     this.$nextTick(() => {
+    //       this.changeTool("rectangle", 0);
+    //     });
+    //   }
+    // },
   },
   methods: {
     changeTool(eventName, index) {

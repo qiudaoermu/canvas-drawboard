@@ -1,24 +1,24 @@
 export let status = {
-  DRAWING:'DRAWING',
-  MOVING:'MOVING',
-  UPDATING:'UPDATING',
-  DEFAULT:'DEFAULT'
-}
+  DRAWING: "DRAWING",
+  MOVING: "MOVING",
+  UPDATING: "UPDATING",
+  DEFAULT: "DEFAULT",
+};
 
 export let supportedGraphics = {
-  RECTANGLE:'rectangle',
-  POLYLINE:'polyline',
-  POLYGON:'polygon'
-}
-
+  RECTANGLE: "rectangle",
+  POLYLINE: "polyline",
+  POLYGON: "polygon",
+};
 
 /**
  * drawing grid.
  */
 export function generateGrid(canvas, color, stepx, stepy) {
+  debugger;
   let ctx = canvas.getContext("2d");
   if (!ctx) {
-    console.log('canvas is not exist');
+    console.log("canvas is not exist");
     return;
   }
   ctx.save();
@@ -41,17 +41,16 @@ export function generateGrid(canvas, color, stepx, stepy) {
   ctx.restore();
 }
 
-
 /**
  * draw the Navigation Line.
- * @param {*} canvas 
- * @param {*} x 
- * @param {*} y 
+ * @param {*} canvas
+ * @param {*} x
+ * @param {*} y
  */
 export function drawNavigationLine(canvas, x, y) {
   let ctx = canvas.getContext("2d");
   if (!ctx) {
-    console.log('canvas is not exist');
+    console.log("canvas is not exist");
     return;
   }
   ctx.save();
@@ -66,7 +65,7 @@ export function drawNavigationLine(canvas, x, y) {
   ctx.lineTo(x + 0.5, canvas.height);
   ctx.stroke();
   ctx.beginPath();
-  ctx.arc(x, y, 1, 0, Math.PI * 2, false)
+  ctx.arc(x, y, 1, 0, Math.PI * 2, false);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(0, y + 0.5);

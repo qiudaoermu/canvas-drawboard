@@ -1,13 +1,13 @@
-@import './variables.scss';
-@import './drawboard.scss';
-
+@import "./variables.scss";
+@import "./drawboard.scss";
 
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
 }
 
 label {
@@ -16,6 +16,7 @@ label {
 
 html {
   height: 100%;
+  user-select: none;
   box-sizing: border-box;
 }
 
