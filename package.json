@@ -1,6 +1,6 @@
 {
   "name": "canvas-drawboard",
-  "version": "0.1.54",
+  "version": "0.1.57",
   "license": "MIT",
   "description": "a drawboard based on vue2.x",
   "scripts": {

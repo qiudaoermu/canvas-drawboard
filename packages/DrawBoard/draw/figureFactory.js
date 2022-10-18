@@ -224,7 +224,6 @@ class Polyline extends Graph {
       ctx.translate(-midPoint.x, -midPoint.y);
       // ctx.drawImage(imgUploadArraw, startPoint.x, startPoint.y, 50, 1000);
       // ctx.restore();
-
       if (this.direction === "A->B") {
         this.drawArrow(
           ctx,

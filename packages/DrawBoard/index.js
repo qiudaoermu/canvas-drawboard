@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from "vue";
 
 import {
   Button,
@@ -11,9 +11,13 @@ import {
   Form,
   FormItem,
   InputNumber,
+  Option,
+  Select,
   ColorPicker,
   Slider,
 } from "element-ui";
+Vue.use(Select);
+Vue.use(Option);
 Vue.use(Button);
 Vue.use(Icon);
 Vue.use(Tooltip);
@@ -27,11 +31,11 @@ Vue.use(ColorPicker);
 Vue.use(Slider);
 Vue.use(Loading.directive);
 // 导入组件，组件必须声明 name
-import DrawBoard from './main.vue'
+import DrawBoard from "./main.vue";
 
 // 为组件添加 install 方法，用于按需引入
-DrawBoard.install = function (Vue) {
-    Vue.component(DrawBoard.name, DrawBoard)
-}
+DrawBoard.install = function(Vue) {
+  Vue.component(DrawBoard.name, DrawBoard);
+};
 
-export default DrawBoard
+export default DrawBoard;

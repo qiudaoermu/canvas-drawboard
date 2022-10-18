@@ -210,7 +210,7 @@ export default {
   },
   mounted() {
     this.initSize();
-    // this.observerView();
+    this.observerView();
     this.canvas.addEventListener(
       "mousemove",
       this.drawNavigationLineEvent,
@@ -334,6 +334,10 @@ export default {
           );
           tmpFigure.options = {};
           tmpFigure.options.path_strokeStyle = figure.path_strokeStyle;
+          tmpFigure.options.path_lineWidth = figure.path_lineWidth;
+          tmpFigure.options.point_radis = figure.point_radis;
+          tmpFigure.options.point_lineWidth = figure.point_lineWidth;
+          tmpFigure.options.point_strokeStyle = figure.point_strokeStyle;
           tmpFigure.points[i] = {
             x: Math.round(tempPoint.x),
             y: Math.round(tempPoint.y),

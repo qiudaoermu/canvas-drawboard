@@ -2,7 +2,7 @@
   <div>
     <section class="flex">
       <drawboard
-        :url="line"
+        :url="url1"
         :width="600"
         :height="500"
         @updateData="updateData"
@@ -12,20 +12,6 @@
       ></drawboard>
       <div class="form">
         <el-form label-width="100px" label-position="left" :model="formData">
-          <el-form-item label="检测目标">
-            <el-select
-              class="input-wrapper"
-              v-model="formData.detectTarget"
-              placeholder="请选择检测目标"
-            >
-              <el-option
-                :label="item.dictValue"
-                :value="item.dictValue"
-                v-for="(item, index) in imgTypeList"
-                :key="index"
-              ></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label="跨域方向">
             <el-select
               class="input-wrapper"
@@ -52,21 +38,7 @@
         </el-form>
       </div>
     </section>
-    <div class="footer">
-      <el-button style="margin: 0 80px" type="primary" @click="onSubmit">
-        <i class="el-icon--left"></i>
-        <span>确定</span>
-      </el-button>
-      <el-button
-        style="margin: 0 80px"
-        type="primary"
-        @click="onHandleSave"
-        plain
-      >
-        <i class="el-icon--left"></i>
-        <span>取消</span>
-      </el-button>
-    </div>
+    
     <!-- <div class="container-wrapper" v-show="step === 1">
       <drawboard
         :url="line"
@@ -151,7 +123,6 @@ export default {
         type: "",
         isTest: false, //true运行一次false保存
       },
-      NGINX_IMG: process.env.VUE_APP_NGINX_IMG,
       triggerTypeList: [
         {
           dictValue: "A->B",
@@ -180,7 +151,7 @@ export default {
             { x: 450, y: 540 },
             { x: 450, y: 150 },
           ],
-          direction: "AB",
+          direction: "A->B",
           options: {
             path_lineWidth: 3,
             path_strokeStyle: "yellow",
@@ -261,14 +232,24 @@ export default {
       loadingData: false,
     };
   },
+  mounted() {
+    
+  },
   methods: {
+    handleDirectionChange(val) {
+      this.$set(this.polyline, 0, {
+        ...this.polyline[0],
+        direction: val
+      })
+    },
     nextStep(value) {
       this.step = value;
       // this.labelDataOrigin2 = []
       // this.url3 = ""
     },
     updateData(data) {
-      console.log(JSON.stringify(data));
+      this.polyline = data;
+      this.polyline[0].direction = this.formData.direction
     },
   },
 };
