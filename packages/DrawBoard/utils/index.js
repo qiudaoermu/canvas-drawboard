@@ -31,7 +31,7 @@ export function generateImage(canvas, cb, url) {
     cb(posX, posY, imageWidth, imageHeight, scaleValue)
   }
   img.onerror = function () {
-    console.log('image load failed!');
+    console.log('image load failed!!!!');
   }
 }
 

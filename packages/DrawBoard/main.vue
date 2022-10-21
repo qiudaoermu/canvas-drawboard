@@ -134,7 +134,7 @@ export default {
       currentStatus: status.DRAWING, // DRAWING/MOVING/UPDATING
       observer: null,
       isFullScreen: false,
-      loading: false,
+      loading: true,
       imagePixelData: [],
       selected: false,
     };
@@ -165,9 +165,9 @@ export default {
     url: {
       handler(val) {
         if (!val) {
-          this.loading = false;
-        } else {
           this.loading = true;
+        } else {
+          this.loading = false;
         }
         this.loadImage(val);
       },
@@ -192,7 +192,6 @@ export default {
     },
     labelDataOrigin: {
       handler(newData) {
-        console.log(newData, "newDate");
         if (newData.length && this.selectedWithBlock) {
           this.selected = true;
         }
@@ -203,7 +202,8 @@ export default {
     },
     loadingData: {
       handler() {
-        this.loading = this.loadingData;
+        debugger
+        // this.loading = this.loadingData;
       },
       immediate: true,
     },
