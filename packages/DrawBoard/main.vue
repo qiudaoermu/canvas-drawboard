@@ -73,6 +73,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    state: {
+      type: String,
+      default: status.DEFAULT
+    },
     height: {
       type: Number,
       default: 400,
@@ -131,7 +135,7 @@ export default {
       activeIndex: -1,
       pointIndex: -1,
       options: {},
-      currentStatus: status.DRAWING, // DRAWING/MOVING/UPDATING
+      currentStatus: this.state, // DRAWING/MOVING/UPDATING
       observer: null,
       isFullScreen: false,
       loading: true,
@@ -155,6 +159,9 @@ export default {
     },
   },
   watch: {
+    state (value) {
+      this.currentStatus = value;
+    },
     graphics: {
       handler() {
         // debounce(this.sendResultData, 100)();
@@ -202,7 +209,6 @@ export default {
     },
     loadingData: {
       handler() {
-        debugger
         // this.loading = this.loadingData;
       },
       immediate: true,
